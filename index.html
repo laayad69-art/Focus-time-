@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZMAX — Engineering Focus</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Cairo:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:     #05080f;
+  --s1:     #0a1220;
+  --s2:     #0d1a2e;
+  --s3:     #112240;
+  --b1:     #0d3b6e;
+  --b2:     #1565c0;
+  --b3:     #1e88e5;
+  --ac:     #29b6f6;
+  --hl:     #81d4fa;
+  --tx:     #e1f0ff;
+  --mu:     #4a7fa0;
+  --mu2:    #2a4a65;
+  --gr:     #00e5a0;
+  --gd:     #ffa040;
+  --rd:     #f44;
+  --rn:     260px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow:hidden;}
+body{background:var(--bg);color:var(--tx);font-family:'Cairo',sans-serif;display:flex;flex-direction:column;}
+
+/* ── TITLEBAR ─────────────────────── */
+.titlebar{
+  height:48px;background:var(--s1);border-bottom:1px solid var(--b1);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px;flex-shrink:0;user-select:none;
+}
+.logo{font-family:'Orbitron',monospace;font-weight:900;font-size:1.1rem;letter-spacing:6px;color:var(--ac);display:flex;align-items:center;gap:10px;}
+.logo-dot{width:6px;height:6px;background:var(--ac);border-radius:50%;box-shadow:0 0 8px var(--ac);}
+.logo-sub{font-family:'JetBrains Mono',monospace;font-size:.48rem;letter-spacing:4px;color:var(--mu);margin-top:2px;}
+
+.title-stats{display:flex;gap:10px;}
+.tstat{
+  display:flex;align-items:center;gap:7px;
+  background:var(--s2);border:1px solid var(--b1);
+  border-radius:6px;padding:5px 12px;
+}
+.tstat-ic{color:var(--mu);display:flex;}
+.tstat-v{font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--ac);font-weight:700;}
+.tstat-l{font-size:.62rem;color:var(--mu);}
+
+/* ── MAIN LAYOUT ─────────────────── */
+.app{display:flex;flex:1;overflow:hidden;}
+
+/* ── SIDEBAR LEFT (nav) ──────────── */
+.sidenav{
+  width:56px;background:var(--s1);border-left:1px solid var(--b1);
+  display:flex;flex-direction:column;align-items:center;
+  padding:12px 0;gap:4px;flex-shrink:0;
+}
+.nav-btn{
+  width:40px;height:40px;border-radius:10px;border:none;cursor:pointer;
+  background:transparent;color:var(--mu);display:flex;align-items:center;justify-content:center;
+  transition:all .2s;position:relative;
+}
+.nav-btn:hover{background:var(--s3);color:var(--tx);}
+.nav-btn.active{background:var(--b1);color:var(--ac);}
+.nav-btn .tip{
+  position:absolute;left:calc(100% + 8px);
+  background:var(--s3);border:1px solid var(--b1);border-radius:6px;
+  padding:4px 10px;font-size:.7rem;white-space:nowrap;color:var(--tx);
+  opacity:0;pointer-events:none;transition:opacity .2s;font-family:'Cairo',sans-serif;
+}
+.nav-btn:hover .tip{opacity:1;}
+
+/* ── CENTER ──────────────────────── */
+.center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;gap:16px;overflow-y:auto;}
+
+/* mode pills */
+.mode-pills{display:flex;background:var(--s2);border:1px solid var(--b1);border-radius:10px;padding:3px;gap:2px;}
+.mpill{
+  padding:7px 20px;border:none;border-radius:8px;cursor:pointer;
+  font-family:'Cairo',sans-serif;font-size:.78rem;font-weight:700;
+  background:transparent;color:var(--mu);transition:all .22s;
+}
+.mpill:hover{color:var(--tx);}
+.mpill.active{background:var(--b2);color:#fff;box-shadow:0 2px 12px rgba(30,136,229,.3);}
+.mpill.active.brk{background:#00695c;color:#fff;}
+
+/* ring */
+.ring-wrap{position:relative;width:var(--rn);height:var(--rn);}
+.rsvg{width:100%;height:100%;transform:rotate(-90deg);}
+.rbg{fill:none;stroke:var(--s3);stroke-width:8;}
+.rpr{
+  fill:none;stroke:var(--ac);stroke-width:8;stroke-linecap:round;
+  stroke-dasharray:817;stroke-dashoffset:0;
+  transition:stroke-dashoffset 1s linear;
+  filter:drop-shadow(0 0 8px rgba(41,182,246,.5));
+}
+.rpr.brk{stroke:var(--gr);filter:drop-shadow(0 0 8px rgba(0,229,160,.5));}
+.ring-in{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;}
+.tdisp{font-family:'JetBrains Mono',monospace;font-size:4.2rem;font-weight:700;color:var(--tx);letter-spacing:1px;line-height:1;}
+.mlbl{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:5px;color:var(--mu);}
+.pdot{width:6px;height:6px;border-radius:50%;background:var(--gr);box-shadow:0 0 7px var(--gr);display:none;}
+.pdot.on{display:block;animation:blink 1.3s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+
+/* progress */
+.pbar{width:100%;max-width:320px;height:4px;background:var(--s3);border-radius:4px;overflow:hidden;}
+.pfill{height:100%;width:100%;border-radius:4px;transition:width 1s linear;background:linear-gradient(90deg,var(--b2),var(--ac));}
+
+/* session dots */
+.sdots{display:flex;gap:8px;}
+.sdot{width:9px;height:9px;border-radius:3px;border:1px solid var(--b1);background:transparent;transition:all .35s;}
+.sdot.done{background:var(--ac);border-color:var(--ac);box-shadow:0 0 6px rgba(41,182,246,.5);}
+
+/* controls */
+.ctrls{display:flex;gap:10px;align-items:center;}
+.cbtn{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  border:none;border-radius:10px;cursor:pointer;transition:all .2s;outline:none;
+  font-family:'Cairo',sans-serif;font-weight:700;font-size:.85rem;
+}
+.cbtn-main{
+  padding:11px 32px;background:var(--b2);color:#fff;
+  box-shadow:0 0 20px rgba(21,101,192,.3),inset 0 1px 0 rgba(255,255,255,.1);
+}
+.cbtn-main:hover{background:var(--b3);box-shadow:0 0 30px rgba(30,136,229,.45);transform:translateY(-1px);}
+.cbtn-main:active{transform:scale(.97);}
+.cbtn-ico{
+  width:42px;height:42px;background:var(--s2);
+  border:1px solid var(--b1);color:var(--mu);border-radius:10px;
+}
+.cbtn-ico:hover{border-color:var(--ac);color:var(--ac);background:var(--s3);}
+
+/* time inputs */
+.tinp-row{
+  display:flex;align-items:center;gap:8px;
+  background:var(--s2);border:1px solid var(--b1);border-radius:10px;
+  padding:8px 16px;font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--mu);
+}
+.ti{
+  width:40px;background:transparent;border:none;border-bottom:1px solid var(--b1);
+  color:var(--ac);font-family:'JetBrains Mono',monospace;font-size:.95rem;
+  text-align:center;outline:none;padding:2px;
+}
+.ti:focus{border-color:var(--ac);}
+input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
+
+/* quote card */
+.qcard{
+  width:100%;max-width:320px;background:var(--s2);border:1px solid var(--b1);
+  border-radius:12px;padding:16px 18px;position:relative;overflow:hidden;
+}
+.qcard::after{content:'';position:absolute;top:0;right:0;width:3px;height:100%;background:linear-gradient(to bottom,var(--ac),var(--b2));}
+.qtype{font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:3px;color:var(--mu);margin-bottom:8px;}
+.qtxt{font-size:.85rem;line-height:1.9;color:var(--tx);transition:opacity .4s;}
+.qtxt.isl{color:var(--gd);}
+.qauth{margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--mu);letter-spacing:2px;}
+.qnav{display:flex;gap:6px;margin-top:10px;}
+.qbtn{
+  display:flex;align-items:center;gap:4px;
+  padding:4px 10px;background:transparent;border:1px solid var(--b1);
+  color:var(--mu);cursor:pointer;border-radius:6px;transition:all .2s;
+  font-size:.65rem;font-family:'JetBrains Mono',monospace;
+}
+.qbtn:hover{border-color:var(--ac);color:var(--ac);}
+
+/* ── RIGHT PANEL ─────────────────── */
+.rpanel{
+  width:300px;background:var(--s1);border-right:1px solid var(--b1);
+  display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;
+}
+.rview{display:none;flex-direction:column;height:100%;overflow-y:auto;}
+.rview.show{display:flex;}
+
+.rsec{padding:16px 18px;border-bottom:1px solid var(--b1);}
+.rhead{
+  display:flex;align-items:center;gap:8px;
+  font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:3px;color:var(--mu);
+  margin-bottom:12px;
+}
+.rhead svg{flex-shrink:0;}
+.rhead::after{content:'';flex:1;height:1px;background:var(--b1);}
+
+/* chart */
+.chart{display:flex;gap:5px;align-items:flex-end;height:76px;}
+.bcol{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;}
+.bout{width:100%;flex:1;background:var(--s3);border-radius:3px 3px 0 0;position:relative;overflow:hidden;}
+.bfill{position:absolute;bottom:0;left:0;right:0;border-radius:3px 3px 0 0;transition:height .9s ease;background:linear-gradient(to top,var(--b2),var(--ac));}
+.bfill.td{background:linear-gradient(to top,var(--ac),var(--hl));}
+.blbl,.bval{font-family:'JetBrains Mono',monospace;font-size:.48rem;color:var(--mu);}
+
+.daybox{
+  display:flex;justify-content:space-between;align-items:center;
+  background:var(--s2);border:1px solid var(--b1);border-radius:8px;padding:8px 12px;margin-top:8px;
+}
+.dlbl{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--mu);}
+.dval{font-family:'JetBrains Mono',monospace;font-size:1.05rem;color:var(--ac);font-weight:700;}
+
+/* goal bar */
+.goal-wrap{margin-top:8px;}
+.goal-row{display:flex;justify-content:space-between;margin-bottom:5px;}
+.goal-lbl{font-size:.7rem;color:var(--mu);}
+.goal-val{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--ac);}
+.gbar{height:5px;background:var(--s3);border-radius:4px;overflow:hidden;}
+.gfill{height:100%;background:linear-gradient(90deg,var(--b2),var(--ac));border-radius:4px;transition:width .8s ease;}
+
+/* tasks */
+.tadd-row{display:flex;gap:7px;}
+.tfld{
+  flex:1;background:transparent;border:none;border-bottom:1px solid var(--b1);
+  color:var(--tx);font-family:'Cairo',sans-serif;font-size:.82rem;padding:5px 0;outline:none;
+}
+.tfld:focus{border-color:var(--ac);}
+.tfld::placeholder{color:var(--mu2);}
+.addbtn{
+  width:28px;height:28px;display:flex;align-items:center;justify-content:center;
+  background:transparent;border:1px solid var(--b2);color:var(--b3);
+  border-radius:7px;cursor:pointer;transition:all .2s;align-self:flex-end;
+}
+.addbtn:hover{background:var(--b2);color:#fff;}
+.tlist{margin-top:10px;display:flex;flex-direction:column;gap:2px;}
+.titem{
+  display:flex;align-items:center;gap:8px;
+  padding:7px 5px;border-bottom:1px solid rgba(13,59,110,.3);
+  cursor:pointer;transition:background .15s;border-radius:6px;font-size:.8rem;
+}
+.titem:hover{background:var(--s2);}
+.titem.done{opacity:.35;text-decoration:line-through;}
+.tchk{
+  width:14px;height:14px;border:1px solid var(--mu2);border-radius:4px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;transition:all .2s;
+}
+.titem.done .tchk{background:var(--gr);border-color:var(--gr);color:var(--bg);}
+.tdel{margin-right:auto;background:none;border:none;color:transparent;cursor:pointer;padding:2px;transition:color .15s;display:flex;}
+.titem:hover .tdel{color:var(--rd);}
+
+/* ambient sounds */
+.amb-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.amb-btn{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  padding:12px 8px;background:var(--s2);border:1px solid var(--b1);
+  border-radius:10px;cursor:pointer;transition:all .22s;color:var(--mu);font-size:.7rem;
+}
+.amb-btn:hover{border-color:var(--b2);color:var(--tx);}
+.amb-btn.on{border-color:var(--ac);color:var(--ac);background:rgba(41,182,246,.07);}
+.amb-btn svg{transition:color .2s;}
+.amb-vol{width:100%;height:3px;background:var(--s3);border-radius:2px;margin-top:4px;overflow:hidden;}
+.amb-vfill{height:100%;background:var(--ac);border-radius:2px;width:70%;transition:width .2s;}
+
+/* notes */
+.notes-area{
+  width:100%;flex:1;min-height:150px;background:var(--s2);border:1px solid var(--b1);
+  border-radius:10px;padding:12px;color:var(--tx);font-family:'Cairo',sans-serif;
+  font-size:.82rem;line-height:1.8;resize:none;outline:none;
+}
+.notes-area:focus{border-color:var(--b2);}
+.notes-area::placeholder{color:var(--mu2);}
+.notes-actions{display:flex;gap:6px;margin-top:8px;}
+.nact-btn{
+  display:flex;align-items:center;gap:5px;
+  padding:5px 12px;background:var(--s2);border:1px solid var(--b1);
+  border-radius:7px;cursor:pointer;color:var(--mu);font-size:.7rem;
+  transition:all .2s;font-family:'Cairo',sans-serif;
+}
+.nact-btn:hover{border-color:var(--ac);color:var(--ac);}
+
+/* break suggestion */
+.break-card{
+  background:var(--s2);border:1px solid var(--b1);border-radius:10px;
+  padding:14px 16px;display:flex;align-items:flex-start;gap:12px;
+}
+.break-ic{color:var(--ac);flex-shrink:0;margin-top:2px;}
+.break-txt{font-size:.82rem;line-height:1.7;color:var(--tx);}
+.break-btn{
+  margin-top:8px;padding:5px 14px;background:transparent;border:1px solid var(--ac);
+  color:var(--ac);border-radius:7px;cursor:pointer;font-size:.72rem;transition:all .2s;
+  font-family:'Cairo',sans-serif;
+}
+.break-btn:hover{background:var(--ac);color:var(--bg);}
+
+/* settings */
+.srow{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(13,59,110,.3);}
+.slbl{font-size:.8rem;color:var(--tx);}
+.sdesc{font-size:.68rem;color:var(--mu);margin-top:2px;}
+.tog{width:34px;height:18px;background:var(--s3);border-radius:9px;position:relative;cursor:pointer;transition:background .3s;flex-shrink:0;}
+.tog.on{background:var(--b2);}
+.tog::after{content:'';position:absolute;top:2px;left:2px;width:14px;height:14px;background:#fff;border-radius:50%;transition:left .3s;box-shadow:0 1px 3px rgba(0,0,0,.3);}
+.tog.on::after{left:18px;}
+.goal-inp{
+  width:55px;background:var(--s2);border:1px solid var(--b1);border-radius:6px;
+  color:var(--ac);font-family:'JetBrains Mono',monospace;font-size:.85rem;
+  text-align:center;outline:none;padding:3px 5px;
+}
+.goal-inp:focus{border-color:var(--ac);}
+
+/* toast */
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--s2);border:1px solid var(--b1);border-radius:10px;
+  padding:10px 20px;font-size:.8rem;color:var(--tx);
+  opacity:0;transition:all .3s;z-index:999;pointer-events:none;
+  display:flex;align-items:center;gap:8px;white-space:nowrap;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* kbd hint */
+.kbd{
+  display:flex;gap:16px;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-size:.55rem;color:var(--mu2);
+}
+.kbd span{display:flex;align-items:center;gap:4px;}
+.kbd kbd{background:var(--s2);border:1px solid var(--b1);border-radius:4px;padding:2px 6px;font-size:.55rem;}
+
+/* flash */
+.flash{position:fixed;inset:0;background:rgba(21,101,192,.06);pointer-events:none;opacity:0;z-index:200;animation:flashF .7s ease-out forwards;}
+@keyframes flashF{0%{opacity:1}100%{opacity:0}}
+
+/* scrollbar */
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--b1);border-radius:2px;}
+
+@media(max-width:900px){
+  .rpanel{width:260px;}
+  :root{--rn:220px;}
+  .tdisp{font-size:3.4rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ TITLEBAR ══════════════════════════════════ -->
+<div class="titlebar">
+  <div>
+    <div class="logo">
+      <div class="logo-dot"></div>
+      AX<span style="color:var(--b3)">M</span>Z
+    </div>
+    <div class="logo-sub">ENGINEERING FOCUS SYSTEM</div>
+  </div>
+  <div class="title-stats">
+    <div class="tstat">
+      <span class="tstat-ic"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+      <span class="tstat-v" id="hTime">0m</span>
+      <span class="tstat-l">اليوم</span>
+    </div>
+    <div class="tstat">
+      <span class="tstat-ic"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>
+      <span class="tstat-v" id="hSess">0</span>
+      <span class="tstat-l">جلسات</span>
+    </div>
+    <div class="tstat">
+      <span class="tstat-ic"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>
+      <span class="tstat-v" id="hStreak">0</span>
+      <span class="tstat-l">يوم متتالي</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══ APP ══════════════════════════════════════ -->
+<div class="app">
+
+  <!-- SIDE NAV -->
+  <div class="sidenav">
+    <button class="nav-btn active" onclick="switchView('timer')" id="nav-timer">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <span class="tip">المؤقت</span>
+    </button>
+    <button class="nav-btn" onclick="switchView('stats')" id="nav-stats">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      <span class="tip">الإحصائيات</span>
+    </button>
+    <button class="nav-btn" onclick="switchView('tasks')" id="nav-tasks">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      <span class="tip">المهام</span>
+    </button>
+    <button class="nav-btn" onclick="switchView('ambient')" id="nav-ambient">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+      <span class="tip">الأصوات</span>
+    </button>
+    <button class="nav-btn" onclick="switchView('notes')" id="nav-notes">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      <span class="tip">ملاحظات</span>
+    </button>
+    <button class="nav-btn" onclick="switchView('settings')" id="nav-settings" style="margin-top:auto;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      <span class="tip">الإعدادات</span>
+    </button>
+  </div>
+
+  <!-- CENTER -->
+  <div class="center">
+
+    <div class="mode-pills">
+      <button class="mpill active" onclick="setMode('focus',this)">
+        تركيز
+      </button>
+      <button class="mpill brk" onclick="setMode('break',this)">
+        استراحة
+      </button>
+    </div>
+
+    <div class="ring-wrap">
+      <svg class="rsvg" viewBox="0 0 300 300">
+        <circle class="rbg" cx="150" cy="150" r="130"/>
+        <circle class="rpr" id="rp" cx="150" cy="150" r="130"/>
+      </svg>
+      <div class="ring-in">
+        <div class="tdisp" id="td">25:00</div>
+        <div class="mlbl" id="ml">FOCUS MODE</div>
+        <div class="pdot" id="pd"></div>
+      </div>
+    </div>
+
+    <div class="pbar"><div class="pfill" id="pf"></div></div>
+
+    <div class="sdots" id="sdots">
+      <div class="sdot"></div><div class="sdot"></div>
+      <div class="sdot"></div><div class="sdot"></div>
+    </div>
+
+    <div class="ctrls">
+      <!-- Reset -->
+      <button class="cbtn cbtn-ico" onclick="resetTimer()" title="إعادة ضبط">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
+      </button>
+      <!-- Start/Pause -->
+      <button class="cbtn cbtn-main" id="sb" onclick="toggleTimer()">
+        <svg id="sb-icon" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        <span id="sb-txt">ابدأ</span>
+      </button>
+      <!-- Skip -->
+      <button class="cbtn cbtn-ico" onclick="skipSession()" title="تخطي">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
+      </button>
+    </div>
+
+    <div class="tinp-row">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--mu)"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <span>تركيز</span>
+      <input class="ti" type="number" id="cm" value="25" min="1" max="120" onchange="applyT()">
+      <span>د</span>
+      <span style="color:var(--b1)">|</span>
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--mu)"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <span>استراحة</span>
+      <input class="ti" type="number" id="cb" value="5" min="1" max="60" onchange="applyT()">
+      <span>د</span>
+    </div>
+
+    <div class="qcard">
+      <div class="qtype" id="qt"></div>
+      <div class="qtxt" id="qtxt"></div>
+      <div class="qauth" id="qa"></div>
+      <div class="qnav">
+        <button class="qbtn" onclick="prevQ()">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+          السابق
+        </button>
+        <button class="qbtn" onclick="nextQ()">
+          التالي
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="kbd">
+      <span><kbd>Space</kbd> تشغيل/إيقاف</span>
+      <span><kbd>R</kbd> إعادة</span>
+      <span><kbd>S</kbd> تخطي</span>
+    </div>
+
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="rpanel">
+
+    <!-- STATS VIEW -->
+    <div class="rview show" id="view-stats">
+      <div class="rsec">
+        <div class="rhead">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          آخر 7 أيام
+        </div>
+        <div class="chart" id="chart"></div>
+        <div class="daybox">
+          <span class="dlbl">⬤ اليوم</span>
+          <span class="dval" id="tdv">0m</span>
+        </div>
+        <div class="goal-wrap">
+          <div class="goal-row">
+            <span class="goal-lbl">الهدف اليومي</span>
+            <span class="goal-val" id="goalPct">0%</span>
+          </div>
+          <div class="gbar"><div class="gfill" id="gfill" style="width:0%"></div></div>
+        </div>
+      </div>
+      <div class="rsec">
+        <div class="rhead">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          الإنجازات
+        </div>
+        <div id="achievements" style="display:flex;flex-direction:column;gap:8px;"></div>
+      </div>
+    </div>
+
+    <!-- TASKS VIEW -->
+    <div class="rview" id="view-tasks">
+      <div class="rsec" style="flex:1;display:flex;flex-direction:column;">
+        <div class="rhead">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          قائمة المهام
+        </div>
+        <div class="tadd-row">
+          <input class="tfld" id="tf" type="text" placeholder="أضف مهمة هندسية..." onkeydown="if(event.key==='Enter')addTask()">
+          <button class="addbtn" onclick="addTask()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+        </div>
+        <div class="tlist" id="tl" style="flex:1;max-height:none;"></div>
+      </div>
+    </div>
+
+    <!-- AMBIENT VIEW -->
+    <div class="rview" id="view-ambient">
+      <div class="rsec">
+        <div class="rhead">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+          أصوات التركيز
+        </div>
+        <div class="amb-grid">
+          <button class="amb-btn" id="amb-rain" onclick="toggleAmb('rain')">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="16" y1="13" x2="16" y2="21"/><line x1="8" y1="13" x2="8" y2="21"/><line x1="12" y1="15" x2="12" y2="23"/><path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"/></svg>
+            مطر
+          </button>
+          <button class="amb-btn" id="amb-white" onclick="toggleAmb('white')">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+            white noise
+          </button>
+          <button class="amb-btn" id="amb-coffee" onclick="toggleAmb('coffee')">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+            كافيه
+          </button>
+          <button class="amb-btn" id="amb-fire" onclick="toggleAmb('fire')">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+            نيران
+          </button>
+        </div>
+        <div style="margin-top:14px;">
+          <div class="rhead" style="margin-bottom:8px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+            الصوت
+          </div>
+          <input type="range" id="ambVol" min="0" max="100" value="40" oninput="setAmbVol(this.value)"
+            style="width:100%;accent-color:var(--ac);cursor:pointer;">
+        </div>
+      </div>
+    </div>
+
+    <!-- NOTES VIEW -->
+    <div class="rview" id="view-notes">
+      <div class="rsec" style="flex:1;display:flex;flex-direction:column;">
+        <div class="rhead">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          ملاحظات سريعة
+        </div>
+        <textarea class="notes-area" id="notesArea" placeholder="اكتب ملاحظاتك هنا... معادلات، أفكار، حاجات مهمة" oninput="saveNotes()"></textarea>
+        <div class="notes-actions">
+          <button class="nact-btn" onclick="clearNotes()">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            مسح
+          </button>
+          <button class="nact-btn" onclick="copyNotes()">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            نسخ
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS VIEW -->
+    <div class="rview" id="view-settings">
+      <div class="rsec">
+        <div class="rhead">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          الإعدادات
+        </div>
+        <div class="srow">
+          <div><div class="slbl">صوت التنبيه</div><div class="sdesc">صوت عند انتهاء الجلسة</div></div>
+          <div class="tog on" id="stog" onclick="toggleSnd()"></div>
+        </div>
+        <div class="srow">
+          <div><div class="slbl">إشعار تلقائي للاستراحة</div><div class="sdesc">الانتقال التلقائي للاستراحة</div></div>
+          <div class="tog on" id="autoBrkTog" onclick="toggleAutoBreak()"></div>
+        </div>
+        <div class="srow">
+          <div><div class="slbl">الهدف اليومي</div><div class="sdesc">عدد ساعات التركيز</div></div>
+          <input class="goal-inp" type="number" id="goalInp" value="4" min="1" max="12" onchange="saveGoal()">
+        </div>
+      </div>
+      <div class="rsec">
+        <div class="rhead">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+          إعادة تعيين
+        </div>
+        <button class="nact-btn" onclick="resetAllData()" style="border-color:var(--rd);color:var(--rd);width:100%;justify-content:center;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          مسح كل البيانات
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ══ CONFIG ══════════════════════════════════════
+const CIRC=2*Math.PI*130;
+let focMin=25,brkMin=5,totalSec=1500,remSec=1500;
+let running=false,iv=null,mode='focus';
+let sndOn=true,autoBreak=true;
+let tasks=[],qIdx=0;
+let goalH=4;
+let ambNodes={};
+
+// ══ QUOTES ══════════════════════════════════════
+const QS=[
+  {t:'// ENGINEERING',x:'المهندس الحقيقي مش بيحل مسألة واحدة — هو بيحل ألف مسألة عشان يوصل للحل الصح.',a:'ZMAX ENG'},
+  {t:'// ENGINEERING',x:'الـ Design مش بيكتمل لما ما فيش حاجة تضيف — بيكتمل لما ما فيش حاجة تشيل.',a:'Antoine de Saint-Exupéry'},
+  {t:'// ENGINEERING',x:'النجاح في الهندسة = 1% إلهام + 99% حسابات صح ومراجعة مستمرة.',a:'ZMAX ENG'},
+  {t:'// ENGINEERING',x:'فهم الأساسيات هو القوة الحقيقية — كل شيء تاني مجرد تطبيق.',a:'ZMAX ENG'},
+  {t:'// ENGINEERING',x:'كل مشكلة معقدة عندها حل بسيط — شغلتك كمهندس إنك تلاقيه.',a:'ZMAX ENG'},
+  {t:'// ENGINEERING',x:'البيانات دايماً أهم من الرأي — اتكلم بالأرقام دايماً.',a:'ZMAX ENG'},
+  {t:'// ENGINEERING',x:'المهندس اللي بيراجع شغله أفضل بكتير من اللي بيعمل بسرعة.',a:'ZMAX ENG'},
+  {t:'// ذكر الله',x:'﴿ وَأَن لَّيْسَ لِلْإِنسَانِ إِلَّا مَا سَعَىٰ ﴾\nالله شايف تعبك ومش هيضيعه أبداً.',a:'النجم: ٣٩',i:1},
+  {t:'// ذكر الله',x:'﴿ إِنَّ اللَّهَ لَا يُضِيعُ أَجْرَ الْمُحْسِنِينَ ﴾\nكل جلسة بنية — ربنا بيكتبها.',a:'التوبة: ١٢٠',i:1},
+  {t:'// ذكر الله',x:'﴿ وَقُل رَّبِّ زِدْنِي عِلْمًا ﴾\nرددها قبل ما تبدأ كل جلسة.',a:'طه: ١١٤',i:1},
+  {t:'// ذكر الله',x:'الله شايفك وانت بتذاكر في الليل لوحدك — وده وحده كافي يخليك تكمل.',a:'ZMAX',i:1},
+  {t:'// ذكر الله',x:'تعلّم العلم عبادة — والمهندس المتقن حرفته كالمجاهد في سبيل الله.',a:'ZMAX',i:1},
+  {t:'// ذكر الله',x:'ربنا ما بينسى تعبك — حتى لو الناس كلها نسيت.',a:'ZMAX',i:1},
+  {t:'// ذكر الله',x:'سبحان الله وبحمده — قولها بين كل جلستين وهتحس بخفة وطاقة.',a:'ZMAX',i:1},
+];
+
+// Break suggestions
+const BREAKS=[
+  {ic:'🧘',t:'تمدد لمدة دقيقتين — ظهرك شاكرك',d:'قف واتمدد، خصوصاً كتفيك وعنقك.'},
+  {ic:'💧',t:'اشرب كوباية مية',d:'الجفاف بيأثر على التركيز أكتر مما بتتخيل.'},
+  {ic:'👁️',t:'استريح عنيك — 20/20/20',d:'بص على حاجة على بُعد 20 قدم لمدة 20 ثانية.'},
+  {ic:'🚶',t:'امشي 5 دقائق',d:'حركة بسيطة بتنشط المخ وبترجع تركيزك.'},
+  {ic:'🍎',t:'كول حاجة صحية',d:'فاكهة أو مكسرات تدي دماغك الطاقة اللي محتاجها.'},
+];
+
+// ══ STORAGE ════════════════════════════════════
+function dayKey(o=0){const d=new Date();d.setDate(d.getDate()-o);return`zm_d_${d.getFullYear()}_${d.getMonth()}_${d.getDate()}`;}
+function saveFocMin(m){const k=dayKey();localStorage.setItem(k,(+localStorage.getItem(k)||0)+m);}
+function getDayMin(o=0){return+localStorage.getItem(dayKey(o))||0;}
+function sessKey(){return`zm_s_${dayKey()}`;}
+function getSess(){return+localStorage.getItem(sessKey())||0;}
+function incSess(){localStorage.setItem(sessKey(),getSess()+1);}
+function getWeek(){let t=0;for(let i=0;i<7;i++)t+=getDayMin(i);return t;}
+function fmtM(m){return m<60?m+'m':Math.floor(m/60)+'h '+(m%60)+'m';}
+
+function getStreak(){
+  const saved=localStorage.getItem('zm_sday');
+  const today=new Date().toDateString();
+  const yest=new Date(Date.now()-864e5).toDateString();
+  let s=+localStorage.getItem('zm_streak')||0;
+  if(saved===today)return s;
+  if(saved===yest){s++;}else{s=getDayMin()>0?1:0;}
+  localStorage.setItem('zm_streak',s);
+  localStorage.setItem('zm_sday',today);
+  return s;
+}
+function saveStreak(){
+  const today=new Date().toDateString();
+  let s=+localStorage.getItem('zm_streak')||1;
+  localStorage.setItem('zm_streak',s);
+  localStorage.setItem('zm_sday',today);
+}
+function saveGoal(){goalH=+document.getElementById('goalInp').value||4;localStorage.setItem('zm_goal',goalH);refreshUI();}
+function loadGoal(){goalH=+localStorage.getItem('zm_goal')||4;document.getElementById('goalInp').value=goalH;}
+
+// ══ VIEWS ═══════════════════════════════════════
+function switchView(v){
+  document.querySelectorAll('.rview').forEach(el=>el.classList.remove('show'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  const el=document.getElementById('view-'+v);
+  if(el)el.classList.add('show');
+  const nb=document.getElementById('nav-'+v);
+  if(nb)nb.classList.add('active');
+  if(v==='stats')buildChart();
+}
+
+// ══ CHART ═══════════════════════════════════════
+const DLBLS=['أحد','إثن','ثلا','أرب','خمي','جمع','سبت'];
+function buildChart(){
+  const data=[];
+  for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);data.push({min:getDayMin(i),td:i===0,lbl:DLBLS[d.getDay()]});}
+  const mx=Math.max(...data.map(d=>d.min),60);
+  const w=document.getElementById('chart');w.innerHTML='';
+  data.forEach(d=>{
+    const p=Math.min((d.min/mx)*100,100);
+    const c=document.createElement('div');c.className='bcol';
+    c.innerHTML=`<div class="bval">${d.min>0?fmtM(d.min):''}</div><div class="bout"><div class="bfill${d.td?' td':''}" style="height:${p}%"></div></div><div class="blbl">${d.lbl}</div>`;
+    w.appendChild(c);
+  });
+}
+
+// ══ ACHIEVEMENTS ════════════════════════════════
+const ACH=[
+  {id:'first',ic:'🚀',t:'الأول',d:'أنهيت جلستك الأولى',check:()=>getSess()>=1},
+  {id:'five',ic:'⚡',t:'المُسرّع',d:'5 جلسات في يوم واحد',check:()=>getSess()>=5},
+  {id:'streak3',ic:'🔥',t:'النار',d:'3 أيام متتالية',check:()=>+localStorage.getItem('zm_streak')>=3},
+  {id:'hour',ic:'⏱️',t:'الساعة الواحدة',d:'ساعة تركيز في يوم',check:()=>getDayMin()>=60},
+  {id:'two',ic:'💎',t:'الألماسة',d:'ساعتين تركيز في يوم',check:()=>getDayMin()>=120},
+];
+function renderAch(){
+  const el=document.getElementById('achievements');el.innerHTML='';
+  ACH.forEach(a=>{
+    const unlocked=a.check();
+    const d=document.createElement('div');
+    d.style=`display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(13,59,110,.3);opacity:${unlocked?1:.35}`;
+    d.innerHTML=`<span style="font-size:1.2rem">${a.ic}</span><div><div style="font-size:.78rem;color:var(--tx)">${a.t}</div><div style="font-size:.65rem;color:var(--mu)">${a.d}</div></div>${unlocked?'<svg style="margin-right:auto;color:var(--gr)" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>':''}`;
+    el.appendChild(d);
+  });
+}
+
+// ══ UI REFRESH ══════════════════════════════════
+function refreshUI(){
+  const tod=getDayMin(),week=getWeek(),sess=getSess(),stk=getStreak();
+  document.getElementById('hTime').textContent=fmtM(tod);
+  document.getElementById('hSess').textContent=sess;
+  document.getElementById('hStreak').textContent=stk;
+  document.getElementById('tdv').textContent=fmtM(tod);
+  const goalMin=goalH*60,pct=Math.min(Math.round((tod/goalMin)*100),100);
+  document.getElementById('goalPct').textContent=pct+'%';
+  document.getElementById('gfill').style.width=pct+'%';
+  buildChart();renderAch();
+}
+
+// ══ MODE ════════════════════════════════════════
+function setMode(m,btn){
+  mode=m;
+  document.querySelectorAll('.mpill').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('rp').className='rpr'+(m==='break'?' brk':'');
+  document.getElementById('pf').style.background=m==='focus'
+    ?'linear-gradient(90deg,var(--b2),var(--ac))'
+    :'linear-gradient(90deg,#00695c,var(--gr))';
+  totalSec=(m==='focus'?focMin:brkMin)*60;remSec=totalSec;
+  running=false;clearInterval(iv);
+  setSBIcon(false);
+  document.getElementById('pd').classList.remove('on');
+  document.getElementById('ml').textContent=m==='focus'?'FOCUS MODE':'BREAK MODE';
+  updDisp();updRing();
+  if(m==='break')showBreakSuggestion();
+}
+
+// ══ TIMER ═══════════════════════════════════════
+function toggleTimer(){running?pause():start();}
+function setSBIcon(playing){
+  const icon=document.getElementById('sb-icon');
+  const txt=document.getElementById('sb-txt');
+  if(playing){
+    icon.innerHTML='<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
+    txt.textContent='إيقاف';
+  } else {
+    icon.innerHTML='<polygon points="5 3 19 12 5 21 5 3"/>';
+    txt.textContent=running===false&&remSec<totalSec?'استمر':'ابدأ';
+  }
+}
+function start(){
+  running=true;setSBIcon(true);
+  document.getElementById('pd').classList.add('on');
+  iv=setInterval(tick,1000);
+}
+function pause(){
+  running=false;clearInterval(iv);
+  document.getElementById('sb-icon').innerHTML='<polygon points="5 3 19 12 5 21 5 3"/>';
+  document.getElementById('sb-txt').textContent='استمر';
+  document.getElementById('pd').classList.remove('on');
+}
+function resetTimer(){
+  clearInterval(iv);running=false;remSec=totalSec;
+  document.getElementById('sb-icon').innerHTML='<polygon points="5 3 19 12 5 21 5 3"/>';
+  document.getElementById('sb-txt').textContent='ابدأ';
+  document.getElementById('pd').classList.remove('on');
+  updDisp();updRing();
+}
+function skipSession(){clearInterval(iv);sessionDone();}
+function tick(){if(remSec<=0){sessionDone();return;}remSec--;updDisp();updRing();}
+
+function sessionDone(){
+  clearInterval(iv);running=false;
+  document.getElementById('pd').classList.remove('on');
+  doFlash();
+  if(mode==='focus'){
+    saveFocMin(focMin);incSess();saveStreak();
+    updDots();if(sndOn)playBeep(660);
+    refreshUI();nextQ();
+    showToast('✅ جلسة منتهية! خذ استراحة مستحقة 💪');
+    if(autoBreak) setMode('break',document.querySelector('.mpill.brk'));
+  } else {
+    if(sndOn)playBeep(880);
+    showToast('⚡ خلاص! وقت التركيز تاني');
+    setMode('focus',document.querySelector('.mpill:not(.brk)'));
+  }
+}
+
+function updDisp(){
+  const m=String(Math.floor(remSec/60)).padStart(2,'0');
+  const s=String(remSec%60).padStart(2,'0');
+  document.getElementById('td').textContent=m+':'+s;
+  document.title=m+':'+s+' — ZMAX';
+}
+function updRing(){
+  const p=remSec/totalSec;
+  document.getElementById('rp').style.strokeDashoffset=CIRC*(1-p);
+  document.getElementById('rp').style.strokeDasharray=CIRC;
+  document.getElementById('pf').style.width=(p*100)+'%';
+}
+function updDots(){
+  const s=getSess(),pos=s%4,full=s>0&&pos===0;
+  document.querySelectorAll('.sdot').forEach((d,i)=>d.className='sdot'+(i<(full?4:pos)?' done':''));
+}
+
+// ══ CUSTOM TIME ═════════════════════════════════
+function applyT(){
+  focMin=+document.getElementById('cm').value||25;
+  brkMin=+document.getElementById('cb').value||5;
+  if(mode==='focus'){totalSec=focMin*60;remSec=totalSec;updDisp();updRing();}
+}
+
+// ══ QUOTES ══════════════════════════════════════
+function showQ(){
+  const q=QS[qIdx];const el=document.getElementById('qtxt');
+  el.style.opacity=0;
+  setTimeout(()=>{
+    document.getElementById('qt').textContent=q.t;
+    el.textContent=q.x;el.className='qtxt'+(q.i?' isl':'');
+    document.getElementById('qa').textContent='— '+q.a;
+    el.style.opacity=1;el.style.transition='opacity .45s';
+  },280);
+}
+function nextQ(){qIdx=(qIdx+1)%QS.length;showQ();}
+function prevQ(){qIdx=(qIdx-1+QS.length)%QS.length;showQ();}
+
+// ══ TASKS ═══════════════════════════════════════
+function addTask(){
+  const f=document.getElementById('tf');const t=f.value.trim();if(!t)return;
+  tasks.push({text:t,done:false});f.value='';renderTasks();saveTasks();
+}
+function renderTasks(){
+  const l=document.getElementById('tl');l.innerHTML='';
+  tasks.forEach((t,i)=>{
+    const el=document.createElement('div');
+    el.className='titem'+(t.done?' done':'');
+    el.innerHTML=`<div class="tchk">${t.done?'<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>':''}</div><span>${t.text}</span><button class="tdel" onclick="delT(${i},event)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>`;
+    el.onclick=()=>{tasks[i].done=!tasks[i].done;renderTasks();saveTasks();};
+    l.appendChild(el);
+  });
+}
+function delT(i,e){e.stopPropagation();tasks.splice(i,1);renderTasks();saveTasks();}
+function saveTasks(){localStorage.setItem('zm_tasks',JSON.stringify(tasks));}
+function loadTasks(){try{tasks=JSON.parse(localStorage.getItem('zm_tasks')||'[]');}catch(e){tasks=[];} renderTasks();}
+
+// ══ AMBIENT SOUND ════════════════════════════════
+let ambCtx=null,ambGain=null,ambVol=0.4;
+const ambActive={rain:false,white:false,coffee:false,fire:false};
+
+function getAmbCtx(){
+  if(!ambCtx)ambCtx=new(window.AudioContext||window.webkitAudioContext)();
+  if(!ambGain){ambGain=ambCtx.createGain();ambGain.gain.value=ambVol;ambGain.connect(ambCtx.destination);}
+  return ambCtx;
+}
+
+function makeNoise(type){
+  const ctx=getAmbCtx();
+  const buf=ctx.createBuffer(1,ctx.sampleRate*3,ctx.sampleRate);
+  const d=buf.getChannelData(0);
+  let b0=0,b1=0,b2=0,b3=0,b4=0,b5=0,b6=0;
+  for(let i=0;i<d.length;i++){
+    if(type==='white'){d[i]=(Math.random()*2-1);}
+    else if(type==='brown'){
+      const wn=Math.random()*2-1;
+      d[i]=(b0+(.02236*wn))/1.0223;b0=d[i];d[i]*=3.5;
+    } else {
+      // pink
+      const wn=Math.random()*2-1;
+      b0=.99886*b0+wn*.0555179;b1=.99332*b1+wn*.0750759;b2=.96900*b2+wn*.1538520;
+      b3=.86650*b3+wn*.3104856;b4=.55000*b4+wn*.5329522;b5=-.7616*b5-wn*.0168980;
+      d[i]=b0+b1+b2+b3+b4+b5+b6+wn*.5362;d[i]*=.11;b6=wn*.115926;
+    }
+  }
+  return buf;
+}
+
+function startAmb(name){
+  const ctx=getAmbCtx();
+  let src;
+  if(name==='rain'||name==='coffee'||name==='fire'){
+    // use pink/brown noise as proxy
+    const buf=makeNoise(name==='fire'?'brown':'pink');
+    src=ctx.createBufferSource();src.buffer=buf;src.loop=true;
+    if(name==='coffee'){
+      // add some variation
+      const bq=ctx.createBiquadFilter();bq.type='bandpass';bq.frequency.value=800;bq.Q.value=0.5;
+      src.connect(bq);bq.connect(ambGain);
+    } else if(name==='fire'){
+      const bq=ctx.createBiquadFilter();bq.type='lowpass';bq.frequency.value=400;
+      src.connect(bq);bq.connect(ambGain);
+    } else {
+      const bq=ctx.createBiquadFilter();bq.type='highpass';bq.frequency.value=200;
+      src.connect(bq);bq.connect(ambGain);
+    }
+  } else {
+    const buf=makeNoise('white');
+    src=ctx.createBufferSource();src.buffer=buf;src.loop=true;
+    src.connect(ambGain);
+  }
+  src.start();
+  ambNodes[name]=src;
+}
+
+function toggleAmb(name){
+  if(ambActive[name]){
+    try{ambNodes[name]&&ambNodes[name].stop();}catch(e){}
+    delete ambNodes[name];ambActive[name]=false;
+    document.getElementById('amb-'+name).classList.remove('on');
+  } else {
+    try{startAmb(name);}catch(e){showToast('⚠️ فعّل الصوت في المتصفح');}
+    ambActive[name]=true;
+    document.getElementById('amb-'+name).classList.add('on');
+  }
+}
+function setAmbVol(v){
+  ambVol=v/100;
+  if(ambGain)ambGain.gain.setValueAtTime(ambVol,ambCtx.currentTime);
+}
+
+// ══ NOTES ═══════════════════════════════════════
+function saveNotes(){localStorage.setItem('zm_notes',document.getElementById('notesArea').value);}
+function loadNotes(){document.getElementById('notesArea').value=localStorage.getItem('zm_notes')||'';}
+function clearNotes(){if(confirm('مسح الملاحظات؟')){document.getElementById('notesArea').value='';saveNotes();}}
+function copyNotes(){navigator.clipboard.writeText(document.getElementById('notesArea').value).then(()=>showToast('✅ تم النسخ'));}
+
+// ══ SOUND (beep) ════════════════════════════════
+function toggleSnd(){
+  sndOn=!sndOn;
+  document.getElementById('stog').className='tog'+(sndOn?' on':'');
+}
+function toggleAutoBreak(){
+  autoBreak=!autoBreak;
+  document.getElementById('autoBrkTog').className='tog'+(autoBreak?' on':'');
+}
+function playBeep(f=660){
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    [f,f*1.25].forEach((freq,i)=>{
+      const o=ctx.createOscillator(),g=ctx.createGain();
+      o.connect(g);g.connect(ctx.destination);o.frequency.value=freq;o.type='sine';
+      const t=ctx.currentTime+i*.38;
+      g.gain.setValueAtTime(.28,t);g.gain.exponentialRampToValueAtTime(.001,t+.7);
+      o.start(t);o.stop(t+.7);
+    });
+  }catch(e){}
+}
+
+// ══ BREAK SUGGESTION ════════════════════════════
+let brkIdx=0;
+function showBreakSuggestion(){
+  const b=BREAKS[brkIdx%BREAKS.length];brkIdx++;
+  // switch to stats view and show suggestion
+}
+
+// ══ TOAST ═══════════════════════════════════════
+let toastT;
+function showToast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+// ══ FLASH ═══════════════════════════════════════
+function doFlash(){const el=document.createElement('div');el.className='flash';document.body.appendChild(el);setTimeout(()=>el.remove(),800);}
+
+// ══ KEYBOARD ════════════════════════════════════
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')return;
+  if(e.code==='Space'){e.preventDefault();toggleTimer();}
+  if(e.key==='r'||e.key==='R')resetTimer();
+  if(e.key==='s'||e.key==='S')skipSession();
+});
+
+// ══ RESET ALL ═══════════════════════════════════
+function resetAllData(){
+  if(confirm('هتمسح كل البيانات والإحصائيات. متأكد؟')){
+    Object.keys(localStorage).filter(k=>k.startsWith('zm_')).forEach(k=>localStorage.removeItem(k));
+    tasks=[];renderTasks();refreshUI();updDots();showToast('🗑️ تم مسح كل البيانات');
+  }
+}
+
+// ══ INIT ════════════════════════════════════════
+setInterval(nextQ,50000);
+(function init(){
+  loadGoal();loadTasks();loadNotes();
+  updDisp();updRing();showQ();refreshUI();updDots();
+  // default right panel = stats
+  switchView('stats');
+})();
+</script>
+</body>
+</html>
